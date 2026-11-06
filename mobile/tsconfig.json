@@ -1,0 +1,21 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "types": [
+      "jest",
+      "node"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "App.jsx",
+    "src/screens/Menu/Catering/OrderConfirm.jsx",
+    "src/screens/FoodList/CustomizeBurger.jsx",
+    "nativewind-env.d.ts"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/Pods"
+  ]
+}

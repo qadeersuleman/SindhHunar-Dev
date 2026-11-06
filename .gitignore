@@ -1,0 +1,120 @@
+# ==========================================
+# SindhHunar Monorepo .gitignore
+# ==========================================
+
+# --- Dependencies ---
+node_modules/
+.pnp
+.pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# --- Environment & Secret Variables ---
+# Block all .env files containing real secrets
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.crt
+
+# Keep example files tracked in git
+!.env.example
+!web/.env.example
+!mobile/env.example
+!mobile/.env.example
+
+# --- Logs & Debugging ---
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# --- Testing & Coverage ---
+coverage/
+*.lcov
+.nyc_output
+
+# --- Next.js (Web) ---
+.next/
+out/
+build/
+dist/
+.vercel
+*.tsbuildinfo
+
+# --- React Native & Mobile ---
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.cxx/
+android/.kotlin/
+*.iml
+*.hprof
+*.keystore
+!android/app/debug.keystore
+
+# iOS / Xcode
+ios/Pods/
+ios/build/
+ios/DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.xcuserstate
+**/.xcode.env.local
+
+# Metro & Bundles
+.metro-health-check*
+*.jsbundle
+
+# Mobile Build Binaries
+*.apk
+*.aab
+*.zip
+
+# Fastlane
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+
+# --- Infrastructure & Terraform ---
+infra/terraform/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# --- IDEs & System Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
