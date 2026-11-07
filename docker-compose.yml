@@ -1,0 +1,61 @@
+# ================================================================
+# SindhHunar Multi-Container Orchestration (Option A Architecture)
+# ================================================================
+
+services:
+  # --------------------------------------------------------------
+  # 1. Web Application (Next.js 16)
+  # --------------------------------------------------------------
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: sindhhunar-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Secrets aur URLs .env file se automatically inject hongi
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - sindhhunar-network
+
+  # --------------------------------------------------------------
+  # 2. Redis Cache & Real-Time Engine (Live Tracking / Fast Cache)
+  # --------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: sindhhunar-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sindhhunar-network
+
+# ----------------------------------------------------------------
+# Persistent Volumes (Redis cache safe rahega restart par)
+# ----------------------------------------------------------------
+volumes:
+  redis_data:
+    driver: local
+
+# ----------------------------------------------------------------
+# Internal Isolated Network
+# ----------------------------------------------------------------
+networks:
+  sindhhunar-network:
+    driver: bridge
