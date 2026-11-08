@@ -1,25 +1,35 @@
 import type { Metadata } from "next";
-import { Poppins, Bebas_Neue, Noto_Nastaliq_Urdu } from "next/font/google";
+import localFont from "next/font/local";
+import { ClientProviders } from "@/components/ClientProviders";
 import "./globals.css";
 
-const poppins = Poppins({
-  weight: ["300", "400", "500", "600", "700"],
-  subsets: ["latin"],
+const poppins = localFont({
+  src: [
+    {
+      path: "../public/fonts/Poppins-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Poppins-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Poppins-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-poppins",
   display: "swap",
 });
 
-const bebasNeue = Bebas_Neue({
-  weight: ["400"],
-  subsets: ["latin"],
+const bebasNeue = localFont({
+  src: "../public/fonts/BebasNeue-Regular.ttf",
+  weight: "400",
+  style: "normal",
   variable: "--font-bebas",
-  display: "swap",
-});
-
-const nastaliq = Noto_Nastaliq_Urdu({
-  weight: ["400", "700"],
-  subsets: ["arabic"],
-  variable: "--font-sindhi",
   display: "swap",
 });
 
@@ -39,9 +49,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${poppins.variable} ${bebasNeue.variable} ${nastaliq.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#FAF9F6] text-[#1A1A1A] selection:bg-[#800000] selection:text-white">
-        {children}
+    <html lang="en" className={`${poppins.variable} ${bebasNeue.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col bg-[#FAF9F6] text-[#1A1A1A] selection:bg-[#800000] selection:text-white font-sans">
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );

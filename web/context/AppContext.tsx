@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Product, FALLBACK_PRODUCTS, supabase } from '@/lib/supabase';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { Product } from '@/lib/supabase';
+import { fetchLiveProducts } from '@/lib/services';
 import { translations, Language } from '@/lib/translations';
 
 export interface CartItem {
@@ -16,6 +17,7 @@ interface AppContextType {
   t: typeof translations['en'];
   products: Product[];
   loadingProducts: boolean;
+  refreshProducts: () => Promise<void>;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   selectedCategory: string;
@@ -31,6 +33,10 @@ interface AppContextType {
   setIsCartOpen: (open: boolean) => void;
   selectedProduct: Product | null;
   setSelectedProduct: (p: Product | null) => void;
+  isAuthModalOpen: boolean;
+  setIsAuthModalOpen: (open: boolean) => void;
+  isOrdersModalOpen: boolean;
+  setIsOrdersModalOpen: (open: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -48,7 +54,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return 'en';
   });
 
-  const [products, setProducts] = useState<Product[]>(FALLBACK_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -67,6 +73,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isOrdersModalOpen, setIsOrdersModalOpen] = useState(false);
 
   const isRTL = language === 'sd' || language === 'ur';
   const t = translations[language];
@@ -91,42 +99,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [cart]);
 
-  // Fetch real-time products from Supabase
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        setLoadingProducts(true);
-        const { data, error } = await supabase
-          .from('products')
-          .select(`
-            *,
-            artisans (
-              id,
-              shop_name,
-              specialty,
-              rating
-            )
-          `)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.warn('Supabase fetch error, using fallback:', error.message);
-          setProducts(FALLBACK_PRODUCTS);
-        } else if (data && data.length > 0) {
-          setProducts(data as Product[]);
-        } else {
-          setProducts(FALLBACK_PRODUCTS);
-        }
-      } catch (err) {
-        console.error('Fetch error:', err);
-        setProducts(FALLBACK_PRODUCTS);
-      } finally {
-        setLoadingProducts(false);
+  // Fetch real-time products directly from Supabase DB
+  const loadProducts = useCallback(async () => {
+    try {
+      setLoadingProducts(true);
+      const { data, error } = await fetchLiveProducts();
+      if (!error && data) {
+        setProducts(data);
+      } else {
+        // Empty state when DB is empty or fails — NO dummy items
+        setProducts([]);
       }
+    } catch (err) {
+      console.error('Fetch error:', err);
+      setProducts([]);
+    } finally {
+      setLoadingProducts(false);
     }
-
-    fetchProducts();
   }, []);
+
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
 
   const addToCart = (product: Product, quantity = 1) => {
     setCart((prev) => {
@@ -164,7 +158,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const cartSubtotal = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+  const cartSubtotal = cart.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0
+  );
 
   return (
     <AppContext.Provider
@@ -175,6 +172,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         t,
         products,
         loadingProducts,
+        refreshProducts: loadProducts,
         searchQuery,
         setSearchQuery,
         selectedCategory,
@@ -190,17 +188,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsCartOpen,
         selectedProduct,
         setSelectedProduct,
+        isAuthModalOpen,
+        setIsAuthModalOpen,
+        isOrdersModalOpen,
+        setIsOrdersModalOpen,
       }}
     >
-      <div dir={isRTL ? 'rtl' : 'ltr'} className={isRTL ? 'font-sindhi' : 'font-sans'}>
-        {children}
-      </div>
+      {children}
     </AppContext.Provider>
   );
 };
 
 export const useApp = () => {
   const context = useContext(AppContext);
-  if (!context) throw new Error('useApp must be used within AppProvider');
+  if (!context) {
+    throw new Error('useApp must be used within an AppProvider');
+  }
   return context;
 };

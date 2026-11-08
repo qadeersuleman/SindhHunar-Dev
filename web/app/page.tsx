@@ -1,19 +1,19 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { AppProvider, useApp } from '@/context/AppContext';
+import Link from 'next/link';
+import { useApp } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import { Navbar } from '@/components/Navbar';
 import { HeroBanner } from '@/components/HeroBanner';
 import { CategoryChips } from '@/components/CategoryChips';
 import { ProductCard } from '@/components/ProductCard';
-import { ProductModal } from '@/components/ProductModal';
-import { CartDrawer } from '@/components/CartDrawer';
 import { CultureStories } from '@/components/CultureStories';
 import { FloatingAIChat } from '@/components/FloatingAIChat';
 import { Footer } from '@/components/Footer';
-import { Sparkles, Users, Award, ShieldCheck, SearchX } from 'lucide-react';
+import { Sparkles, PlusCircle, SearchX, ShieldCheck } from 'lucide-react';
 
-function MainBazaar() {
+export default function HomePage() {
   const {
     t,
     isRTL,
@@ -21,9 +21,11 @@ function MainBazaar() {
     loadingProducts,
     searchQuery,
     selectedCategory,
-    selectedProduct,
     setSelectedProduct,
+    setIsAuthModalOpen,
   } = useApp();
+
+  const { isAdmin, isArtisan } = useAuth();
 
   // Category & Search filter matching mobile app
   const filteredProducts = useMemo(() => {
@@ -61,144 +63,112 @@ function MainBazaar() {
   }, [products, selectedCategory, searchQuery]);
 
   return (
-    <main className="flex-1">
-      {/* Hero Section */}
-      <HeroBanner />
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
 
-      {/* Main Bazaar Section */}
-      <section id="bazaar" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 scroll-mt-24">
-        
-        {/* Section Title & Subheading */}
-        <div className={`mb-4 ${isRTL ? 'text-right' : 'text-left'}`}>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#800000]/10 text-[#800000] text-xs font-semibold uppercase tracking-wider mb-2">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Sindh Hunar Bazaar</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold font-bebas text-[#1A1A1A] tracking-tight">
-            {t.products.heading}
-          </h2>
-          <p className="mt-1 text-sm text-gray-500 font-light max-w-2xl">
-            {t.products.subheading}
-          </p>
-        </div>
+      <main className="flex-1">
+        {/* Hero Section */}
+        <HeroBanner />
 
-        {/* Category Filters */}
-        <CategoryChips />
-
-        {/* Products Grid */}
-        {loadingProducts ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-12">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="bg-white rounded-3xl p-4 border border-gray-100 shadow-xs animate-pulse">
-                <div className="aspect-4/3 bg-gray-200 rounded-2xl mb-4" />
-                <div className="h-3 bg-gray-200 rounded-md w-1/3 mb-2" />
-                <div className="h-4 bg-gray-200 rounded-md w-3/4 mb-4" />
-                <div className="flex justify-between items-center pt-2">
-                  <div className="h-6 bg-gray-200 rounded-md w-1/2" />
-                  <div className="w-8 h-8 bg-gray-200 rounded-xl" />
-                </div>
+        {/* Main Bazaar Section */}
+        <section id="bazaar" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 scroll-mt-24">
+          
+          {/* Section Title & Subheading */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4">
+            <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#800000]/10 text-[#800000] text-xs font-semibold uppercase tracking-wider mb-2">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Sindh Hunar Bazaar</span>
               </div>
-            ))}
-          </div>
-        ) : filteredProducts.length === 0 ? (
-          <div className="py-20 text-center flex flex-col items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center mb-4">
-              <SearchX className="w-8 h-8" />
+              <h2 className="text-3xl sm:text-4xl font-bold font-bebas text-[#1A1A1A] tracking-tight">
+                {t.products.heading}
+              </h2>
+              <p className="mt-1 text-sm text-gray-500 font-light max-w-2xl">
+                {t.products.subheading}
+              </p>
             </div>
-            <h3 className="text-xl font-bold font-bebas text-gray-800">
-              {t.products.empty}
-            </h3>
-            <p className="text-xs text-gray-500 mt-1 max-w-sm">
-              Try searching for something else like &quot;Ajrak&quot;, &quot;Topi&quot;, or &quot;Ralli&quot;.
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-6">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onOpenModal={(p) => setSelectedProduct(p)}
-              />
-            ))}
-          </div>
-        )}
-      </section>
 
-      {/* Featured Artisan Spotlight */}
-      <section id="artisans" className="bg-[#FAF9F6] py-16 border-t border-b border-gray-200/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-[#800000] via-[#500000] to-[#1A1A1A] rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
-            {/* Pattern */}
-            <div 
-              className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay"
-              style={{
-                backgroundImage: 'url(/images/AjrakBG.jpg)',
-                backgroundSize: 'cover',
-              }}
-            />
+            {/* Quick Add Product Button for Admin / Artisan */}
+            {(isAdmin || isArtisan) && (
+              <Link
+                href="/admin"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#800000] hover:bg-[#660000] text-white text-xs font-bold uppercase tracking-wider shadow-sm transition-all self-start sm:self-auto"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Add Craft to Database</span>
+              </Link>
+            )}
+          </div>
 
-            <div className="relative z-10 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/20 text-[#C5A059] text-xs font-semibold uppercase tracking-wider mb-4 border border-[#C5A059]/30">
-                <Award className="w-3.5 h-3.5" />
-                <span>Meet Our Master Craftsmen</span>
+          {/* Category Filters */}
+          <CategoryChips />
+
+          {/* Products Grid */}
+          {loadingProducts ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-12">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="bg-white rounded-3xl p-4 border border-gray-100 shadow-xs animate-pulse">
+                  <div className="aspect-4/3 bg-gray-200 rounded-2xl mb-4" />
+                  <div className="h-3 bg-gray-200 rounded-md w-1/3 mb-2" />
+                  <div className="h-4 bg-gray-200 rounded-md w-3/4 mb-4" />
+                  <div className="flex justify-between items-center pt-2">
+                    <div className="h-6 bg-gray-200 rounded-md w-1/2" />
+                    <div className="w-8 h-8 bg-gray-200 rounded-xl" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="py-20 text-center flex flex-col items-center justify-center bg-white/60 rounded-3xl border border-dashed border-[#C5A059]/40 p-8 my-6">
+              <div className="w-16 h-16 rounded-full bg-[#800000]/10 text-[#800000] flex items-center justify-center mb-4">
+                <SearchX className="w-8 h-8" />
               </div>
-              <h3 className="text-3xl sm:text-4xl font-bold font-bebas leading-tight">
-                Preserving 4,000 Years of Heritage, One Stitch at a Time
+              <h3 className="text-2xl font-bold font-bebas text-gray-800">
+                {products.length === 0 ? 'No Crafts in Database Yet' : t.products.empty}
               </h3>
-              <p className="text-xs sm:text-sm text-gray-300 mt-4 leading-relaxed font-light">
-                Over 500+ rural artisans in Bhit Shah, Hala, Matiari, Ghotki, and Umerkot partner directly with Sindh Hunar. When you buy from this bazaar, 100% of your support empowers families and keeps the sacred art of Indus block-printing and embroidery alive.
+              <p className="text-xs text-gray-500 mt-2 max-w-md leading-relaxed">
+                {products.length === 0
+                  ? 'The Supabase products table is currently empty or loading. You can use the Admin Panel to instantly add your first authentic Sindhi handicraft!'
+                  : 'Try searching for something else or clear the active filter.'}
               </p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[#C5A059] border border-white/10">
-                    <Users className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold font-bebas">500+ Artisans</div>
-                    <div className="text-[11px] text-gray-400">Rural Families Supported</div>
-                  </div>
+              {products.length === 0 && (
+                <div className="mt-6 flex flex-wrap gap-3 justify-center">
+                  <Link
+                    href="/admin"
+                    className="px-6 py-2.5 rounded-full bg-[#800000] hover:bg-[#660000] text-white text-xs font-bold uppercase tracking-wider shadow-md transition-all flex items-center gap-2"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-[#C5A059]" />
+                    <span>Open Admin Panel & Add Craft</span>
+                  </Link>
+                  <button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="px-6 py-2.5 rounded-full bg-white border border-[#C5A059] text-gray-800 text-xs font-bold uppercase tracking-wider hover:bg-gray-50 transition-all"
+                  >
+                    Manage Roles
+                  </button>
                 </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[#C5A059] border border-white/10">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold font-bebas">100% Fair Trade</div>
-                    <div className="text-[11px] text-gray-400">Zero Middleman Exploitation</div>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
-          </div>
-        </div>
-      </section>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-6">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onOpenModal={(p) => setSelectedProduct(p)}
+                />
+              ))}
+            </div>
+          )}
+        </section>
 
-      {/* Cultural Heritage Stories */}
-      <CultureStories />
+        {/* Culture Stories */}
+        <CultureStories />
+      </main>
 
-      {/* Modals & Drawers */}
-      <ProductModal
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-      />
-
-      <CartDrawer />
+      <Footer />
       <FloatingAIChat />
-    </main>
-  );
-}
-
-export default function HomePage() {
-  return (
-    <AppProvider>
-      <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
-        <Navbar />
-        <MainBazaar />
-        <Footer />
-      </div>
-    </AppProvider>
+    </div>
   );
 }
