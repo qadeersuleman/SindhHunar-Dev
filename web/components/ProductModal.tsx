@@ -86,6 +86,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 src={imageUrl}
                 alt={product.name}
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
                 unoptimized
               />

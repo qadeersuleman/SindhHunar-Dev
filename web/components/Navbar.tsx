@@ -61,6 +61,7 @@ export const Navbar: React.FC = () => {
                   src="/images/logo.png"
                   alt="Sindh Hunar Logo"
                   fill
+                  sizes="48px"
                   className="object-contain"
                   priority
                 />

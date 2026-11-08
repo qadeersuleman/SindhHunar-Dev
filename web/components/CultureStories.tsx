@@ -21,7 +21,7 @@ const STORIES: Story[] = [
     id: '1',
     titleKey: 'The Art of Ajrak (اجرڪ جو هنر)',
     tag: '4,000 YEARS LEGACY',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1000&auto=format&fit=crop',
+    image: 'https://hypsawmgxqxsgaqfgzfk.supabase.co/storage/v1/object/public/products/catalog/ajrak.jpg',
     summary: 'A sacred Indus Valley craft combining natural indigo, madder red, and geometric star blocks representing the cosmos.',
     fullStory: 'Ajrak printing is not just a textile craft; it is a sacred cultural emblem of Sindh that traces its roots directly to the Indus Valley Civilization. The Priest-King statue excavated at Mohenjo-Daro wears a shawl draped over his shoulder with the exact trefoil and star-burst pattern found on modern Sindhi Ajraks today.\n\nThe process of making an authentic Ajrak is meditative and arduous, requiring up to 21 distinct stages over several weeks. It utilizes natural river water, pure indigo, pomegranate skins, and madder root dyes. The deep blue symbolizes the limitless sky, while the intense red honors the fertile earth.',
     origin: 'Bhit Shah, Hala & Matiari, Sindh',
@@ -30,7 +30,7 @@ const STORIES: Story[] = [
     id: '2',
     titleKey: 'Ralli: Stitched Dreams (سبييل خواب)',
     tag: 'INDUS FOLK ART',
-    image: 'https://images.unsplash.com/photo-1528459801416-a7e99a0dce3a?q=80&w=1000&auto=format&fit=crop',
+    image: 'https://hypsawmgxqxsgaqfgzfk.supabase.co/storage/v1/object/public/products/catalog/sindhi_quilt.jpg',
     summary: 'Handcrafted patchwork quilts woven by nomadic and village women using cotton scraps, geometric talismans, and applique motifs.',
     fullStory: 'In the arid villages of rural Sindh and the Thar desert, women have preserved the art of Ralli quilt-making for countless generations. Ralli quilts are lovingly pieced together from leftover fragments of dyed cotton fabric, transformed through intricate stitching into hypnotic geometric patterns.\n\nEvery Ralli tells an intimate story of celebration, memory, or dowry gifts. The patchwork symbols include sacred Indus motifs like snake trails, stars, date palms, and protective amulets. It stands as a testament to women’s creativity and sustainable living.',
     origin: 'Umerkot, Tharparkar & Ghotki, Sindh',
@@ -39,7 +39,7 @@ const STORIES: Story[] = [
     id: '3',
     titleKey: 'Royal Embroidered Topi (سنڌي ٽوپي)',
     tag: 'SYMBOL OF DIGNITY',
-    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop',
+    image: 'https://hypsawmgxqxsgaqfgzfk.supabase.co/storage/v1/object/public/products/catalog/sindhi_topi.jpg',
     summary: 'The iconic arch-cut crown embellished with glass mirrors, gold thread, and silk embroidery worn with profound pride.',
     fullStory: 'The Sindhi Topi, characterized by its distinctive cut-out arch in the front, is the ultimate hallmark of Sindhi honor, sovereignty, and warm hospitality. The arch in the front allows the forehead to touch the ground during prayer.\n\nCrafting a single royal topi takes weeks of patient craftsmanship. Tiny round mirrors (Aarsie) are hand-stitched into dense floral and star medallions using gold, silver, and vibrant silk threads. On Sindh Cultural Day (Sindhi Ekta Diwas), millions wear the Topi and Ajrak together across the globe in festive brotherhood.',
     origin: 'Bhit Shah, Shikarpur & Ghotki, Sindh',
@@ -82,6 +82,8 @@ export const CultureStories: React.FC = () => {
                 src={story.image}
                 alt={story.titleKey}
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                unoptimized
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
@@ -145,6 +147,8 @@ export const CultureStories: React.FC = () => {
                   src={activeStory.image}
                   alt={activeStory.titleKey}
                   fill
+                  sizes="(max-width: 768px) 100vw, 672px"
+                  unoptimized
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
@@ -158,20 +162,20 @@ export const CultureStories: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-6 sm:p-8 space-y-4">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#800000] bg-[#FAF9F6] p-3 rounded-xl border border-gray-100">
-                  <span>Traditional Center of Excellence:</span>
-                  <strong className="text-gray-800">{activeStory.origin}</strong>
+              <div className={`p-6 sm:p-8 ${isRTL ? 'text-right' : 'text-left'}`}>
+                <div className="inline-block px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#C5A059]/40 text-[#800000] text-xs font-semibold mb-4">
+                  Origin: {activeStory.origin}
                 </div>
 
-                <div className="text-xs sm:text-sm text-gray-600 leading-relaxed space-y-3 whitespace-pre-line">
+                <div className="prose prose-sm text-gray-700 leading-relaxed font-light whitespace-pre-line text-xs sm:text-sm">
                   {activeStory.fullStory}
                 </div>
 
-                <div className="pt-4 border-t border-gray-100 flex justify-end">
+                <div className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
+                  <span className="text-xs text-gray-400 font-mono">Preserving Cultural Heritage</span>
                   <button
                     onClick={() => setActiveStory(null)}
-                    className="px-6 py-2.5 rounded-full bg-[#800000] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#660000] shadow-sm"
+                    className="px-5 py-2 rounded-full bg-[#800000] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#660000] transition-colors"
                   >
                     Close Story
                   </button>

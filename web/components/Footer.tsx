@@ -30,6 +30,7 @@ export const Footer: React.FC = () => {
                   src="/images/logo.png"
                   alt="Sindh Hunar"
                   fill
+                  sizes="40px"
                   className="object-contain"
                 />
               </div>

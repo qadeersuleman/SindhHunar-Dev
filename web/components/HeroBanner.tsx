@@ -138,6 +138,8 @@ export const HeroBanner: React.FC = () => {
                       src={slide.image}
                       alt={slide.title}
                       fill
+                      sizes="(max-width: 1024px) 100vw, 448px"
+                      unoptimized
                       className="object-cover"
                       priority
                     />

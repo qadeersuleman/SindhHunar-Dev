@@ -159,7 +159,7 @@ export default function AdminDashboardPage() {
       // Use fallback image if none provided
       const finalImage =
         newImage.trim() ||
-        'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1000&auto=format&fit=crop';
+        'https://hypsawmgxqxsgaqfgzfk.supabase.co/storage/v1/object/public/products/catalog/ajrak.jpg';
 
       const { data, error } = await addProductRecord({
         name: newTitle.trim(),
@@ -410,6 +410,7 @@ export default function AdminDashboardPage() {
                     src="/images/logo.png"
                     alt="Sindh Hunar Logo"
                     fill
+                    sizes="40px"
                     className="object-contain"
                   />
                 </div>
@@ -685,6 +686,7 @@ export default function AdminDashboardPage() {
                         src={newImage}
                         alt="Preview"
                         fill
+                        sizes="128px"
                         className="object-cover"
                         unoptimized
                       />
@@ -807,6 +809,7 @@ export default function AdminDashboardPage() {
                                     src={product.images[0]}
                                     alt={product.name}
                                     fill
+                                    sizes="48px"
                                     className="object-cover"
                                     unoptimized
                                   />

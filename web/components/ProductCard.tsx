@@ -38,6 +38,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal }
           src={imageUrl}
           alt={product.name}
           fill
+          unoptimized
           className="object-cover transition-transform duration-500 group-hover:scale-108"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
