@@ -405,13 +405,13 @@ export default function AdminDashboardPage() {
               <div className="h-6 w-px bg-white/20 mx-1 hidden sm:block" />
 
               <div className="flex items-center gap-2.5">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-[#C5A059] shadow-sm bg-white p-0.5">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-[#C5A059] shadow-sm bg-white p-0.5 flex items-center justify-center">
                   <Image
                     src="/images/logo.png"
                     alt="Sindh Hunar Logo"
-                    fill
-                    sizes="40px"
-                    className="object-contain"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <div>

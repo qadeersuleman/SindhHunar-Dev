@@ -25,13 +25,13 @@ export const Footer: React.FC = () => {
           {/* Col 1: Brand & Mission */}
           <div className={`space-y-4 ${isRTL ? 'text-right' : 'text-left'}`}>
             <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#C5A059] bg-white p-0.5">
+              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#C5A059] bg-white p-0.5 flex items-center justify-center">
                 <Image
                   src="/images/logo.png"
                   alt="Sindh Hunar"
-                  fill
-                  sizes="40px"
-                  className="object-contain"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain"
                 />
               </div>
               <span className="text-2xl font-bold font-bebas text-white">

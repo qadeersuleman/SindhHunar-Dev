@@ -56,13 +56,13 @@ export const Navbar: React.FC = () => {
           {/* Logo & Brand */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#C5A059] shadow-sm bg-white p-0.5 transition-transform duration-300 group-hover:scale-105">
+              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#C5A059] shadow-sm bg-white p-0.5 transition-transform duration-300 group-hover:scale-105 flex items-center justify-center">
                 <Image
                   src="/images/logo.png"
                   alt="Sindh Hunar Logo"
-                  fill
-                  sizes="48px"
-                  className="object-contain"
+                  width={48}
+                  height={48}
+                  className="w-full h-full object-contain"
                   priority
                 />
               </div>
