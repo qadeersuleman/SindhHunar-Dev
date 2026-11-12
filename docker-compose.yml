@@ -1,10 +1,28 @@
 # ================================================================
-# SindhHunar Multi-Container Orchestration (Option A Architecture)
+# SindhHunar Multi-Container Orchestration (With Nginx Reverse Proxy)
 # ================================================================
 
 services:
   # --------------------------------------------------------------
-  # 1. Web Application (Next.js 16)
+  # 1. Nginx Reverse Proxy & Edge Gateway
+  # --------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: sindhhunar-nginx
+    restart: unless-stopped
+    ports:
+      # Bahar ki dunya ke liye sirf standard Port 80 khula hai
+      - "80:80"
+    volumes:
+      # Hamari banayi hui Nginx config ko container mein mount karte hain (Read-Only)
+      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
+    networks:
+      - sindhhunar-network
+
+  # --------------------------------------------------------------
+  # 2. Web Application (Next.js 16)
   # --------------------------------------------------------------
   web:
     build:
@@ -12,10 +30,11 @@ services:
       dockerfile: Dockerfile
     container_name: sindhhunar-web
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    # DevOps Security: Humne bahir se port 3000 band kar diya hai!
+    # Ab koi bahar se direct Node.js par nahi aa sakta, sirf Nginx se aayega.
+    expose:
+      - "3000"
     environment:
-      # Secrets aur URLs .env file se automatically inject hongi
       - NODE_ENV=production
       - PORT=3000
       - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
@@ -28,7 +47,7 @@ services:
       - sindhhunar-network
 
   # --------------------------------------------------------------
-  # 2. Redis Cache & Real-Time Engine (Live Tracking / Fast Cache)
+  # 3. Redis Cache & Real-Time Engine (Tracking & Sessions)
   # --------------------------------------------------------------
   redis:
     image: redis:7-alpine
@@ -47,14 +66,14 @@ services:
       - sindhhunar-network
 
 # ----------------------------------------------------------------
-# Persistent Volumes (Redis cache safe rahega restart par)
+# Persistent Volumes
 # ----------------------------------------------------------------
 volumes:
   redis_data:
     driver: local
 
 # ----------------------------------------------------------------
-# Internal Isolated Network
+# Shared Private Network
 # ----------------------------------------------------------------
 networks:
   sindhhunar-network:
